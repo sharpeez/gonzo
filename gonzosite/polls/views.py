@@ -1,5 +1,4 @@
-from django.http import HttpResponse
-from django.http import Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -29,7 +28,7 @@ class ResultsView(generic.DetailView):
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
-        selectd_choice = question.choice_set.get(pk=request.POST['choice'])
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
         # Redisplay the question voting from.
         return render(request, 'polls/detail.html', {
