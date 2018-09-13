@@ -1,11 +1,11 @@
 # .coveragerc to control coverage.py
 [run]
 include = 
-    gonzosite/polls/*
+    polls/*
 
 [report]
 include =
-    gonzosite/polls/*
+    polls/*
 skip_covered = True
 
 [html]

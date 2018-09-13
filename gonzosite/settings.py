@@ -9,23 +9,23 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
 import os
+
+from confy import env, database
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 's82of5=v+=mbdfjx2=g+m07n-h#i7q-s5^mf=*le*r)e3_7m0t'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# Environment settings
+DEBUG = env('DEBUG', True)
+SECRET_KEY = env('SECRET_KEY','PlaceholderSecretKey')
+CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', False)
+SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', False)
+if not DEBUG:
+    ALLOWED_HOSTS = env('ALLOWED_DOMAINS', '').split(',')
+else:
+    ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = ['127.0.0.1', '::1']
 
 
 # Application definition
@@ -74,17 +74,7 @@ WSGI_APPLICATION = 'gonzosite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'myproject',
-        'USER': 'myprojectuser',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
-
+DATABASES = {'default': database.config()}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -120,8 +110,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
-
+# https://docs.djangoproject.com/en/2.1/howto/static-files
 STATIC_URL = '/static/'
 
 
