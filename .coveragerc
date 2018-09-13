@@ -1,0 +1,14 @@
+# .coveragerc to control coverage.py
+[run]
+include = 
+    gonzosite/polls/*
+
+[report]
+include =
+    gonzosite/polls/*
+skip_covered = True
+
+[html]
+directory = coverage_report
+title = coverage 
+
