@@ -1,0 +1,22 @@
+<table border=1 cellpadding=15>
+    <tr>
+        <td> SURNAME </td>
+        <td> FIRSTNAME </td>
+        <td> MANAGER </td>
+        <td> START DATE </td>
+    </tr>
+    {% if latest_employee_list %}
+        {% for employees in latest_employee_list %}
+        <tr>
+            <td> {{ employees.surname }} </td>
+            <td> {{ employees.firstname }} </td>
+            <td> {{ employees.manager.surname }} </td>
+            <td> {{ employees.start_date }} </td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan=2>No employees are available.</td>
+        </tr>
+    {% endif %}
+</table>
