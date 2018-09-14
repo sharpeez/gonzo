@@ -1,5 +1,7 @@
 from django.http import HttpResponse
 from django.views import generic
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.shortcuts import render
 
 from django.db.models.query import EmptyQuerySet
 
@@ -10,11 +12,6 @@ from .models import Employee, EmployeeType
 class IndexView(generic.ListView):
     template_name = 'employees/index.html'
     context_object_name = 'latest_employee_list'
-
-    def get_queryset(self):
-        """
-        Returns the a page set.
-        """
-
-        return Employee.objects.all()
+    paginate_by = 1
+    queryset = Employee.objects.all()
 
