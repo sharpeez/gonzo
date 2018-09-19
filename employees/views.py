@@ -12,6 +12,6 @@ from .models import Employee, EmployeeType
 class IndexView(generic.ListView):
     template_name = 'employees/index.html'
     context_object_name = 'latest_employee_list'
-    paginate_by = 1
+    paginate_by = 20
     queryset = Employee.objects.all()
 

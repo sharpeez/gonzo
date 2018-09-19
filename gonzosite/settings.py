@@ -10,14 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 import os
+import sys
 
 from confy import env, database
-from pathlib import Path
+from unipath import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = str(Path(__file__).resolve().parents[1])
-PROJECT_DIR = str(Path(__file__).resolve().parents[0])
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).ancestor(1)
+PROJECT_DIR = os.path.join(BASE_DIR, 'gonzosite')
+# Add PROJECT_DIR to the system path.
+sys.path.insert(0, PROJECT_DIR)
+# Add others sys.path.insert(0, os.path.join(PROJECT_DIR, 'apps'))
 
 # Environment settings
 DEBUG = env('DEBUG', True)
@@ -34,14 +38,15 @@ INTERNAL_IPS = ['127.0.0.1', '::1']
 # Application definition
 
 INSTALLED_APPS = [
-    'polls.apps.PollsConfig',
-    'employees.apps.EmployeesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'polls',
+    'employees',
 ]
 
 MIDDLEWARE = [
@@ -63,9 +68,9 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
