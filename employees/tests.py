@@ -17,6 +17,7 @@ class EmployeeModelTest(TestCase):
         Set up context for unit test.
         """
         Employee.objects.create(firstname="Test", surname="Case")
+        EmployeeType.objects.create(code="MGR")
         logger.info('Set up DB with an Employee object')
 
     def test_employee_type_creation(self):
@@ -32,6 +33,15 @@ class EmployeeModelTest(TestCase):
         """ 
         An Employee details is persisted. 
         """
-        e = Employee.objects.get(firstname="Test")
-        logger.info('Employee: %s Added', e.firstname)
-        self.assertTrue(isinstance(e, Employee))
+        Employee.objects.filter(firstname="Test").update(firstname="Fred")
+        e = Employee.objects.get(firstname="Fred")
+        logger.info('updates: %s', e.firstname)
+#        self.assertTrue(isinstance(r, EmployeeType))
+
+    def tes_employee_get_managers(self):
+        """
+        Assert retrieval of Managers.
+        """
+        e = Employee.objects.get_managers()
+        logger.info('Role retrieved:')
+#        self.assertTrue(isinstance(e, Employee))
