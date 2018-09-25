@@ -17,31 +17,33 @@ class EmployeeModelTest(TestCase):
         Set up context for unit test.
         """
         Employee.objects.create(firstname="Test", surname="Case")
-        EmployeeType.objects.create(code="MGR")
-        logger.info('Set up DB with an Employee object')
+        EmployeeType.objects.create(code="SUPER", text="Supervisor")
+        Employee.objects.filter(firstname="Test").update(role=EmployeeType.objects.create(code="MGR"))
 
     def test_employee_type_creation(self):
         """
         Assert the creation of a new Employee Type.
         """
-        EmployeeType.objects.create(code="SUPER", text="Supervisor")
-        et = EmployeeType.objects.get(code="SUPER")
-        logger.info('Employee Type: %s', et.code)
-        self.assertTrue(isinstance(et, EmployeeType))
+        EmployeeType.objects.create(code="STD")
+
+        # Check new EmployeeType is created.
+        self.assertTrue(isinstance(EmployeeType.objects.get(code="STD"), EmployeeType))
 
     def test_employee_creation(self):
         """ 
         An Employee details is persisted. 
         """
-        Employee.objects.filter(firstname="Test").update(firstname="Fred")
-        e = Employee.objects.get(firstname="Fred")
-        logger.info('updates: %s', e.firstname)
-#        self.assertTrue(isinstance(r, EmployeeType))
+        Employee.objects.filter(firstname="Test").update(role=EmployeeType.objects.get(code="SUPER"))
 
-    def tes_employee_get_managers(self):
+        # Check new employee is created.
+        self.assertTrue(isinstance(Employee.objects.get(surname="Case"), Employee))
+
+    def test_employee_get_managers(self):
         """
         Assert retrieval of Managers.
         """
-        e = Employee.objects.get_managers()
-        logger.info('Role retrieved:')
-#        self.assertTrue(isinstance(e, Employee))
+        Employee.objects.create(firstname="Margaret", surname="Peters")
+        Employee.objects.filter(firstname="Margaret").update(role=EmployeeType.objects.create(code="MGR"))
+
+        # Check total count of 2 managers stored.
+        self.assertEqual(Employee.objects.get_managers().count(),2)
