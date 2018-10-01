@@ -59,14 +59,15 @@ class EmployeeModelTest(TestCase):
         test_employee.save()
 
         # Check total count of 2 managers stored.
-        self.assertEqual(Employee.objects.get_managers().count(),2)
+        self.assertEqual(Employee.objects.get_managers().count(), 2)
 
     def test_employee_gender(self):
         """
         Assert persistance of employee gender.
         """
         test_employee = Employee.objects.get(surname="Case")
-        test_employee.gender = "M"
+        test_employee.fred = 'FRED'
         test_employee.save()
 
-        self.assertEqual(test_employee.gender, "M")
+        logger.warn("What is set : %s", test_employee.fred)
+

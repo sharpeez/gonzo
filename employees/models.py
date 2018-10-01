@@ -47,7 +47,6 @@ class Employee(models.Model):
     start_date = models.DateTimeField(default=timezone.now,)
     role = models.ForeignKey(EmployeeType, on_delete=models.SET_NULL, null=True, blank=True,)
     manager = models.ForeignKey('self', related_name='employee', on_delete=models.SET_NULL, null=True,  blank=True,)
-    gender = models.CharField(max_length=1, null=True,)
 
     objects = EmployeeManager()
 
