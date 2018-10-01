@@ -16,9 +16,12 @@ class EmployeeModelTest(TestCase):
         """
         Set up context for unit test.
         """
-        Employee.objects.create(firstname="Test", surname="Case")
+        test_employee = Employee.objects.create(firstname="Test", surname="Case")
+        test_employee.role = EmployeeType.objects.create(code="MGR")
+        test_employee.save()
+
         EmployeeType.objects.create(code="SUPER", text="Supervisor")
-        Employee.objects.filter(firstname="Test").update(role=EmployeeType.objects.create(code="MGR"))
+        EmployeeType.objects.create(code="EXEC")
 
     def test_employee_type_creation(self):
         """
@@ -42,8 +45,19 @@ class EmployeeModelTest(TestCase):
         """
         Assert retrieval of Managers.
         """
-        Employee.objects.create(firstname="Margaret", surname="Peters")
-        Employee.objects.filter(firstname="Margaret").update(role=EmployeeType.objects.create(code="MGR"))
+        test_employee = Employee.objects.create(firstname="Margaret", surname="Peters")
+        test_employee.role = EmployeeType.objects.create(code="MGR")
+        test_employee.save()
 
         # Check total count of 2 managers stored.
         self.assertEqual(Employee.objects.get_managers().count(),2)
+
+    def test_employee_gender(self):
+        """
+        Assert persistance of employee gender.
+        """
+        test_employee = Employee.objects.get(surname="Case")
+        test_employee.gender = "M"
+        test_employee.save()
+
+        self.assertEqual(test_employee.gender, "M")

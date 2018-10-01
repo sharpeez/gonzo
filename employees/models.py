@@ -14,8 +14,8 @@ class EmployeeType(models.Model):
         ('EXEC','Executive'),
         ('CHIEF','Chief Executive'),
     )
-    code = models.CharField(max_length=5, choices=CODE_TYPES)
-    text = models.CharField(max_length=100)
+    code = models.CharField(max_length=5, choices=CODE_TYPES,)
+    text = models.CharField(max_length=100,)
 
     class Meta:
         verbose_name = 'role'
@@ -37,11 +37,12 @@ class Employee(models.Model):
     """
     A model to record employee details.
     """
-    firstname = models.CharField(max_length=100)
-    surname = models.CharField(max_length=100)
-    start_date = models.DateTimeField(default=timezone.now)
+    firstname = models.CharField(max_length=100,)
+    surname = models.CharField(max_length=100,)
+    start_date = models.DateTimeField(default=timezone.now,)
     role = models.ForeignKey(EmployeeType, on_delete=models.SET_NULL, null=True, blank=True,)
     manager = models.ForeignKey('self', related_name='employee', on_delete=models.SET_NULL, null=True,  blank=True,)
+    gender = models.CharField(max_length=1, null=True,)
 
     objects = EmployeeManager()
 
