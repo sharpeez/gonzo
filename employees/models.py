@@ -14,10 +14,10 @@ class EmployeeType(models.Model):
     A model to record the types of employment roles.
     """
     CODE_TYPES = (
-        ('STD','Standard'),
-        ('MGR','Manager'),
-        ('EXEC','Executive'),
-        ('CHIEF','Chief Executive'),
+        ('STD', 'Standard'),
+        ('MGR', 'Manager'),
+        ('EXEC', 'Executive'),
+        ('CHIEF', 'Chief Executive'),
     )
     code = models.CharField(max_length=5, choices=CODE_TYPES,)
     text = models.CharField(max_length=100,)
@@ -28,15 +28,18 @@ class EmployeeType(models.Model):
     def __str__(self):
         return self.code
 
+
 class EmployeeManager(models.Manager):
     """
     Abstract out common logic for Employee model.
     """
+
     def get_managers(self):
         """
         filter on managers for query set.
         """
         return Employee.objects.filter(role__code='MGR')
+
 
 class Employee(models.Model):
     """
@@ -59,7 +62,7 @@ class Employee(models.Model):
         """
         _title = self.role.text
 
-        if self.role.code=='EXEC':
+        if self.role.code == 'EXEC':
             _title = 'General Manager'
 
         return _title
@@ -70,6 +73,7 @@ class Employee(models.Model):
     def __str__(self):
         return "<Employee: {} {}>".format(self.firstname, self.surname)
 
+
 class EmployeeListener(object):
     """
     Event Listener for Employee object.
@@ -77,6 +81,4 @@ class EmployeeListener(object):
     @staticmethod
     @receiver(post_save, sender=Employee)
     def saving_employee(sender, instance, **kwargs):
-        logger.debug("Details saved through a signal")
-
-
+        logger.debug("Details saved through a signal %s %s", sender, instance)
