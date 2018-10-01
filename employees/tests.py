@@ -1,6 +1,6 @@
 import logging
 
-from django.test import TestCase
+from django.test import TestCase, tag
 
 from .models import Employee, EmployeeType
 
@@ -16,6 +16,7 @@ class EmployeeModelTest(TestCase):
         """
         Set up context for unit test.
         """
+        logger.setLevel(logging.DEBUG)
         test_employee = Employee.objects.create(firstname="Test", surname="Case")
         test_employee.role = EmployeeType.objects.create(code="MGR")
         test_employee.save()
@@ -32,19 +33,27 @@ class EmployeeModelTest(TestCase):
         # Check new EmployeeType is created.
         self.assertTrue(isinstance(EmployeeType.objects.get(code="STD"), EmployeeType))
 
+    @tag('single-test')
     def test_employee_creation(self):
         """ 
         An Employee details is persisted. 
         """
-        Employee.objects.filter(firstname="Test").update(role=EmployeeType.objects.get(code="SUPER"))
+
+        new_employee = Employee.objects.create(firstname="Margaret", surname="Peters")
+        new_employee.role = EmployeeType.objects.get(code="EXEC")
+        new_employee.gender = "F"
+        new_employee.save()
+
+        logger.warn("Role Title : %s", Employee.objects.get(surname="Peters").role_title)
 
         # Check new employee is created.
-        self.assertTrue(isinstance(Employee.objects.get(surname="Case"), Employee))
+        self.assertTrue(isinstance(Employee.objects.get(surname="Peters"), Employee))
 
     def test_employee_get_managers(self):
         """
         Assert retrieval of Managers.
         """
+        logger.setLevel(logging.WARN)
         test_employee = Employee.objects.create(firstname="Margaret", surname="Peters")
         test_employee.role = EmployeeType.objects.create(code="MGR")
         test_employee.save()

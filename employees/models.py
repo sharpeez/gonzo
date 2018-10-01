@@ -1,7 +1,12 @@
 # employees/models.py
-from django.utils import timezone
+import logging
 
+from django.utils import timezone
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+logger = logging.getLogger(__name__)
 
 
 class EmployeeType(models.Model):
@@ -46,10 +51,33 @@ class Employee(models.Model):
 
     objects = EmployeeManager()
 
+    # Internal Properties
+
+    @property
+    def role_title(self):
+        """
+        Employee role title
+        """
+        _title = self.role.text
+
+        if self.role.code=='EXEC':
+            _title = 'General Manager'
+
+        return _title
+
     class Meta:
         verbose_name_plural = 'staff'
 
     def __str__(self):
         return "<Employee: {} {}>".format(self.firstname, self.surname)
+
+class EmployeeListener(object):
+    """
+    Event Listener for Employee object.
+    """
+    @staticmethod
+    @receiver(post_save, sender=Employee)
+    def saving_employee(sender, instance, **kwargs):
+        logger.debug("Details saved through a signal")
 
 
