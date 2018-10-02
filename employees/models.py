@@ -82,3 +82,48 @@ class EmployeeListener(object):
     @receiver(post_save, sender=Employee)
     def saving_employee(sender, instance, **kwargs):
         logger.debug("Details saved through a signal %s %s", sender, instance)
+
+
+class ApplicationRequest(models.Model):
+    subject = models.CharField(max_length=200, blank=True)
+    text = models.TextField(blank=True)
+    officer = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
+
+    objects = models.Manager()
+
+
+class IDRequest(ApplicationRequest):
+    REASON_CHOICES = (('missing', 'There is currently no Photographic Identification uploaded'),
+                      ('expired', 'The current identification has expired'),
+                      ('not_recognised',
+                       'The current identification is not recognised by the Department of Parks and Wildlife'),
+                      ('illegible', 'The current identification image is of poor quality and cannot be made out.'),
+                      ('other', 'Other'))
+    reason = models.CharField('Reason', max_length=30, choices=REASON_CHOICES, default=REASON_CHOICES[0][0])
+
+
+class ReturnsRequest(ApplicationRequest):
+    REASON_CHOICES = (('outstanding', 'There are currently outstanding returns for the previous licence'),
+                      ('other', 'Other'))
+    reason = models.CharField('Reason', max_length=30, choices=REASON_CHOICES, default=REASON_CHOICES[0][0])
+
+
+class AmendmentRequest(ApplicationRequest):
+    STATUS_CHOICES = (('requested', 'Requested'), ('amended', 'Amended'))
+    REASON_CHOICES = (('insufficient_detail', 'The information provided was insufficient'),
+                      ('missing_information', 'There was missing information'),
+                      ('other', 'Other'))
+    status = models.CharField('Status', max_length=30, choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0])
+    reason = models.CharField('Reason', max_length=30, choices=REASON_CHOICES, default=REASON_CHOICES[0][0])
+
+
+class Assessment(ApplicationRequest):
+    STATUS_CHOICES = (('awaiting_assessment', 'Awaiting Assessment'), ('assessed', 'Assessed'),
+                      ('assessment_expired', 'Assessment Period Expired'))
+    assigned_assessor = models.ForeignKey(Employee, on_delete=models.SET_NULL, blank=True, null=True)
+    status = models.CharField('Status', max_length=20, choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0])
+    date_last_reminded = models.DateField(null=True, blank=True)
+    comment = models.TextField(blank=True)
+    purpose = models.TextField(blank=True)
+
+

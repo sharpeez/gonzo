@@ -3,7 +3,7 @@ import logging
 from django.test import TestCase, tag
 
 from .models import Employee, EmployeeType
-
+from .models import ApplicationRequest, Assessment
 
 logger = logging.getLogger(__name__)
 
@@ -63,11 +63,33 @@ class EmployeeModelTest(TestCase):
 
     def test_employee_gender(self):
         """
-        Assert persistance of employee gender.
+        Assert persistence of employee gender.
         """
         test_employee = Employee.objects.get(surname="Case")
         test_employee.fred = 'FRED'
         test_employee.save()
 
         logger.warn("What is set : %s", test_employee.fred)
+
+    def test_create_application_request(self):
+        """
+        Assert the creation of table inheritance.
+        """
+        new_request = ApplicationRequest.objects.create(subject="Creation of new Application", text="with assessment")
+        new_request.officer = Employee.objects.get(surname="Case")
+        new_request.save()
+
+        self.assertTrue(isinstance(ApplicationRequest.objects.get(text="with assessment"), ApplicationRequest))
+
+    def test_create_assessment(self):
+        """
+        Assert new assessment.
+        """
+        new_assessment = Assessment.objects.create(subject="A new assessment for report", text="an approach")
+        new_assessment.assigned_assessor = Employee.objects.get(surname="Case")
+        new_assessment.status = "assessed"
+        new_assessment.save()
+
+        self.assertTrue(isinstance(Assessment.objects.get(text="an approach"), Assessment))
+
 
